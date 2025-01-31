@@ -22,5 +22,5 @@ Still doing research on different languages, databases, and frameworks, but thes
 * **Frontend**: ReactNative
 * **Database**: SQL
 
-Tech Stack:
+## Tech Stack:
 Here is the link to the SupaBase database: https://ggmvutgkilclpyifbxfx.supabase.co
