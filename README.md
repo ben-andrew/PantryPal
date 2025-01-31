@@ -21,6 +21,3 @@ Still doing research on different languages, databases, and frameworks, but thes
 * **Backend**: Python Django or Flask.
 * **Frontend**: ReactNative
 * **Database**: SQL
-
-## Tech Stack:
-Here is the link to the SupaBase database: https://ggmvutgkilclpyifbxfx.supabase.co
