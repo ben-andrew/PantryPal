@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Button, ActivityIndicator, StyleSheet } from "react-native";
+import React, { Component, useEffect, useState } from "react";
+import { FlatList, View, Text, Button, ActivityIndicator, StyleSheet } from "react-native";
 
 type Recipe = {
   title: string;
@@ -9,6 +9,8 @@ type Recipe = {
 export default function LandingScreen() {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
+  const [recipeList, setRecipeList] = useState<Recipe[]>([]);
+  const [meal, setMeal] = useState<any>(null); 
 
   useEffect(() => {
     fetchRecipe();
@@ -19,10 +21,10 @@ export default function LandingScreen() {
     try {
       const res = await fetch("https://www.themealdb.com/api/json/v1/1/random.php");
       const data = await res.json();
-      const meal = data.meals[0];
+      setMeal(data.meals[0]);
 
       setRecipe({
-        title: meal.strMeal,
+        title: meal["strMeal"],
         ingredients: Object.keys(meal)
           .filter((key) => key.startsWith("strIngredient") && meal[key])
           .map((key) => meal[key]),
@@ -33,25 +35,50 @@ export default function LandingScreen() {
     setLoading(false);
   };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Today's Recipe Recommendation</Text>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
+  const displayList = recipeList?.map((value, index) => (
+    <Text key={index} style={styles.ingredient}>
+      • {value.title}
+    </Text>
+  ))
+
+  //function isn't repainting the page
+  const addRecipe = async () => {
+    //adding a null check lets us just use it as a recipe type
+    const thisRec = recipe;
+    if (thisRec != null && !recipeList.includes(thisRec)) {
+        setRecipeList([...recipeList, thisRec]);
+    }
+  };
+
+  const clearList = async () => {
+    if (recipe != null) {
+        setRecipeList([]);
+    }
+  }
+
+  const DrawScreen = ( <View style={styles.container}>
+    <Text style={styles.title}>Today's Recipe Recommendation</Text>
+    {loading ? (
+        <ActivityIndicator size="large" color="#00009ff" />
+    ) : (
         <>
-          <Text style={styles.recipeTitle}>{recipe?.title}</Text>
-          <Text style={styles.ingredientsTitle}>Ingredients:</Text>
-          {recipe?.ingredients.map((ing, index) => (
+        <Text style={styles.recipeTitle}>{recipe?.title}</Text>
+        <Text style={styles.ingredientsTitle}>Ingredients:</Text>
+        {recipe?.ingredients.map((ing, index) => (
             <Text key={index} style={styles.ingredient}>
-              • {ing}
+            • {ing}
             </Text>
-          ))}
-          <Button title="Get Another Recipe" onPress={fetchRecipe} />
+        ))}
+        <Button title="Get Another Recipe" onPress={fetchRecipe} />
+        <Button title="Add recipe to List" onPress={addRecipe} />
+        <Button title="clear list" onPress={clearList}/>
+        {displayList}
         </>
-      )}
+    )}
     </View>
-  );
+  )
+
+  return DrawScreen;
 }
 
 const styles = StyleSheet.create({
