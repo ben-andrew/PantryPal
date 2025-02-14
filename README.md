@@ -2,7 +2,7 @@
 
 ## Get started
 
-First clone the repo, then...
+First clone the repo(make sure you use git checkout to get into this branch). Then...
 
 1. Install dependencies
 
