@@ -10,6 +10,22 @@
    git checkout newMaster (you can also do "git checkout (other branch name)" to go to a different branch"
    ```
 
+2. Add the API Keys
+
+   create a file called "apiKeys.js" and put it in the root directory(same folder as App.js, index.js, etc)
+   It should have format...
+   ```bash
+   export default keys = {
+      // the API anon key
+      anon: "anon api key here",
+    
+      // the url
+      url: "supabase project url here"
+   };
+   ```
+   anon API key and project URL are both in settings/configuration/"Data API" in the supabase project
+
+
 3. Install dependencies
 
    ```bash
