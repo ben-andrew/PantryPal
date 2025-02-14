@@ -1,20 +1,8 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import LandingScreen from "./screens/LandingScreen";
+//import DbTestScreen from "./screens/dbTestScreen"
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  console.log("in app");
+  return <LandingScreen />;
+  //return <DbTestScreen /> //has to begin with a uppercase letter for some reason or it doesn't work.
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
