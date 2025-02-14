@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 import React, { Component, useEffect, useState } from "react";
 import { FlatList, View, Text, Button, ActivityIndicator, StyleSheet } from "react-native";
+import supaKeys from '../apiKeys';
 
-const supabaseUrl = 'https://ggmvutgkilclpyifbxfx.supabase.co'
-const supabaseKey = process.env.SUPABASE_KEY
+const supabaseUrl = supaKeys.url;
+const supabaseKey = supaKeys.anon;
 
 if (supabaseKey == undefined) {
     throw console.error("no supabase API key! cannot do this!");
