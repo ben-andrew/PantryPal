@@ -2,15 +2,21 @@
 
 ## Get started
 
-First clone the repo(make sure you use git checkout to get into this branch). Then...
+1. Clone the git repo
 
-1. Install dependencies
+   ```bash
+   git clone https://github.com/ben-andrew/PantryPal.git
+   cd PantryPal
+   git checkout newMaster (you can also do "git checkout (other branch name)" to go to a different branch"
+   ```
+
+3. Install dependencies
 
    ```bash
    npm install
    ```
 
-2. Start the app
+4. Start the app
 
    ```bash
    npx expo start
