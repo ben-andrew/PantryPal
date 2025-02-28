@@ -18,6 +18,6 @@ PantryPal. The app that food waste fears!
 
 ## Proposed Technologies:
 Still doing research on different languages, databases, and frameworks, but these are some ideas.
-* **Backend**: Python Django or Flask.
+* **Backend**: Python
 * **Frontend**: ReactNative
-* **Database**: SQL
+* **Database**: Supabase
