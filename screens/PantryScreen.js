@@ -85,6 +85,7 @@ const PantryScreen = () => {
     setEditingItem(item); // Set the current item being edited
   };
 
+  // Function to delete an item from database
   const handleDeletePress = async (food_id) => {
     Alert.alert(
       'Confirm Deletion',
