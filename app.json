@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "pantrypal",
+    "slug": "pantrypal",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+   "splash": {
+      "image": "./assets/pantrypallogo2.png", 
+      "height": 10,
+      "width": 10,
+      "resizeMode": "contain",
+      "backgroundColor": "#FFA500",
+      "duration": 5000  
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+     
+    },
+    "web": {
+      "favicon": "./assets/pantrypallogo2.png"
+    }
+  }
+}
