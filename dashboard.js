@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
-import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity, ScrollView, SafeAreaView} from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from "react-native-vector-icons/Ionicons";
+import { Dimensions } from 'react-native';
+
+
+const {width, height} = Dimensions.get("window");
 
 const Dashboard = () => {
   useEffect(() => {
@@ -9,9 +13,8 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-    
-      <LinearGradient colors={["#FFA500", "#FFB733"]} style={styles.header}>
+    <SafeAreaView style={styles.container}>
+      <LinearGradient colors = {["#FFA500", "#FFB733"]} style = {styles.header}>
         <TouchableOpacity style={styles.iconButton}>
           <Icon name="cart-outline" size={24} color="white" />
         </TouchableOpacity>
@@ -35,36 +38,36 @@ const Dashboard = () => {
         </View>
       </LinearGradient>
 
-      
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
-        {["All", "Lunch", "Dinner", "Vegan", "..."].map((item, index) => (
-          <TouchableOpacity key={index} style={styles.categoryButton}>
-            <Text style={styles.categoryText}>{item}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      
-      <View style={styles.recipeContainer}>
-        {["Recipe 1", "Recipe 2", "Recipe 3", "Recipe 4"].map((recipe, index) => (
-          <View key={index} style={styles.recipeCard}>
-            <Text style={styles.recipeText}>{recipe}</Text>
-            <TouchableOpacity style={styles.addButton}>
-              <Icon name="add-circle-outline" size={24} color="#FFA500" />
+      <ScrollView contentContainerStyle = {{ flexGrow: 1, paddingBottom: 80}}>
+        <ScrollView horizontal showsHorizontalScrollIndicator = {false} style = {styles.categoryContainer}>
+          {["All", "Lunch", "Dinner", "Vegan", "..."].map((item, index) => (
+            <TouchableOpacity key={index} style={styles.categoryButton}>
+              <Text style={styles.categoryText}>{item}</Text>
             </TouchableOpacity>
-          </View>
-        ))}
-      </View>
+          ))}
+        </ScrollView>
 
+        <View style={styles.recipeContainer}>
+          {["Recipe 1", "Recipe 2", "Recipe 3", "Recipe 4"].map((recipe, index) => (
+            <View key={index} style={styles.recipeCard}>
+              <Image source = {require('../assets/foodplaceholder.png')} style = {styles.recipeImage} />
+              <Text style={styles.recipeText}>{recipe}</Text>
+              <TouchableOpacity style={styles.addButton}>
+                <Icon name="add-circle-outline" size={24} color="#FFA500" />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
      
       <View style={styles.navBar}>
         {["home-outline", "list-outline", "scan-outline", "search-outline", "add-outline"].map((icon, index) => (
           <TouchableOpacity key={index} style={styles.navButton}>
-            <Icon name={icon} size={24} color="gray" />
+            <Icon name={icon} size={24} color="#FFA500" />
           </TouchableOpacity>
         ))}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -73,7 +76,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f1f1f1",
   },
-  
+
   header: {
     height: 265,
     paddingTop: 50,
@@ -84,10 +87,12 @@ const styles = StyleSheet.create({
 
   logo: {
     position: "absolute",
-    top: 70,
+    top: 65,
     height: 35,
     width: 35,
-    marginLeft: 186,
+    left: "55%",
+    marginLeft: -17.5,
+    
   },
   iconButton: {
     position: "absolute",
@@ -97,9 +102,10 @@ const styles = StyleSheet.create({
 
   settingsIconButton: {
     position: "absolute",
-    top: 60,
-    marginLeft: 350,
-    marginTop: 10,
+    top: 70,
+    right: 20,
+    marginLeft: -20,
+    
   },
 
   headerText: {
@@ -107,7 +113,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     alignSelf: "left",
-    marginTop: 80,
+    marginTop: 70,
     marginBottom: 0,
   },
 
@@ -116,19 +122,21 @@ const styles = StyleSheet.create({
     color: "white",
     alignSelf: "left",
     marginTop: -1,
+    marginBottom: 10,
   },
 
   searchBar: {
     flexDirection: "row",
     backgroundColor: "white",
     borderRadius: 30,
-    marginTop: 15,
-    marginLeft: 10,
+    marginTop: 4,
+    marginLeft: 4,
     paddingHorizontal: 20,
     alignItems: "center",
-    height: 55,
-    width: 350,
-    top: 17,
+    height: 50,
+    width: "90%",
+   
+    alignSelf: "center",
   },
 
   searchInput: {
@@ -142,7 +150,7 @@ const styles = StyleSheet.create({
 
   categoryContainer: {
     flexDirection: "row",
-    marginTop: 10,
+    marginTop: 8,
     paddingHorizontal: 20,
   },
 
@@ -153,13 +161,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 20,
     marginRight: 10,
-    top: 23,
+    marginTop: 10,
+    top: 0,
+    
   },
 
   categoryText: {
     fontSize: 14,
     fontWeight: "bold",
-    top: 6,
+    top: 8,
+    color: "#FFA550",
   },
   recipeContainer: {
     flexDirection: "row",
@@ -169,31 +180,44 @@ const styles = StyleSheet.create({
   },
 
   recipeCard: {
-    width: "40%",
+    width: "45%",
+    aspectRatio: 3/4,
     height: 190,
     backgroundColor: "white",
     borderRadius: 20,
-    marginBottom: 42,
+    marginBottom: 22,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
+    elevation:5,
     shadowOpacity: 0.1,
     shadowRadius: 4,
-  
+    marginTop: 10,
+  },
+
+  recipeImage: {
+    width: "40%",
+    height: "30%",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    marginBottom: 20,
+    top: -40,
   },
 
   recipeText: {
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: -95,
+    marginBottom: -45,
     marginRight: 65,
+    color: "#FFA500"
   },
 
   addButton: {
     position: "absolute",
-    bottom: 35,
-    right: 10,
+    bottom: 33,
+    right: 15,
+    color: "#00ff00",
   },
 
   navBar: {
@@ -202,14 +226,21 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     backgroundColor: "white",
     borderTopWidth: 1,
-    borderTopColor: "#E0E0E0",
-    top: -20,
-    width: 340,
-    marginLeft: 38,
+    borderTopColor: "#ffffff",
+    position: "absolute",
+    bottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    elevation:5,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    width: "80%",
+    alignSelf: "center",
     borderRadius: 30,
   },
   navButton: {
     padding: 10,
+    color: "#ffffff"
   },
 });
 

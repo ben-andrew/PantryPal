@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
-
+  
   logo: {
     width: 78,
     height: 78,
