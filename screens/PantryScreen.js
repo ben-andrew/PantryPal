@@ -10,17 +10,17 @@ const PantryScreen = () => {
   const [editingItem, setEditingItem] = useState(null); // Track the item being edited
 
   // Fetch pantry items from Supabase
+  const fetchPantryItems = async () => {
+    const { data, error } = await supabase.from('food_inventory').select('*');
+    if (error) {
+      console.error('Error fetching data:', error);
+    } else {
+      console.log('Fetched Items:', data);  // Log the data to inspect it
+      setItems(data);
+    }
+  };
+
   useEffect(() => {
-    const fetchPantryItems = async () => {
-      const { data, error } = await supabase.from('food_inventory').select('*');
-      if (error) {
-        console.error('Error fetching data:', error);
-      } else {
-        console.log('Fetched Items:', data);  // Log the data to inspect it
-        setItems(data);
-      }
-    };
-  
     fetchPantryItems();
   }, []);
 
@@ -39,10 +39,7 @@ const PantryScreen = () => {
       console.error('Error inserting data:', error);
       Alert.alert('Error', 'Failed to add item');
     } else {
-      setItems([...items, ...data]);
-      setName('');
-      setQuantity('');
-      setUnit('');
+      fetchPantryItems();
     }
   };
 
@@ -69,7 +66,7 @@ const PantryScreen = () => {
       console.error('Error updating data:', error);
       Alert.alert('Error', 'Failed to update item');
     } else {
-      setItems(items.map(item => item.food_id === editingItem.food_id ? data[0] : item)); // Update list with modified item
+      fetchPantryItems(); // Update list with modified item
       setName('');
       setQuantity('');
       setUnit('');
@@ -86,8 +83,10 @@ const PantryScreen = () => {
   };
 
   // Function to delete an item from database
-  const handleDeletePress = async (food_id) => {
+  const handleDeletePress = (food_id) => {
+    console.log("pressed delete")
     Alert.alert(
+      console.log("In Alert"),
       'Confirm Deletion',
       'Are you sure you want to delete this item?',
       [
@@ -109,7 +108,7 @@ const PantryScreen = () => {
               Alert.alert('Error', 'Failed to delete item');
             } else {
               // Remove the deleted item from local state
-              setItems(items.filter(item => item.food_id !== food_id));
+              fetchPantryItems();
               Alert.alert('Success', 'Item deleted successfully');
             }
           },
