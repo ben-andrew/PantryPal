@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, Alert } from 'react-native';
+import { View, Text, TextInput, Button, FlatList } from 'react-native';
+import alert from "../src/alert";
 import supabase from '../src/supabase';
 
 const PantryScreen = () => {
@@ -27,7 +28,7 @@ const PantryScreen = () => {
   // Function to add a new pantry item
   const addPantryItem = async () => {
     if (!name || !quantity || !unit) {
-      Alert.alert('Error', 'Please fill in all fields');
+      alert('Error', 'Please fill in all fields');
       return;
     }
 
@@ -37,7 +38,7 @@ const PantryScreen = () => {
 
     if (error) {
       console.error('Error inserting data:', error);
-      Alert.alert('Error', 'Failed to add item');
+      alert('Error', 'Failed to add item');
     } else {
       fetchPantryItems();
     }
@@ -46,14 +47,14 @@ const PantryScreen = () => {
   // Function to edit an existing pantry item
   const editPantryItem = async () => {
     if (!name || !quantity || !unit) {
-      Alert.alert('Error', 'Please fill in all fields');
+      alert('Error', 'Please fill in all fields');
       return;
     }
   
     const parsedQuantity = parseInt(quantity);
   
     if (isNaN(parsedQuantity)) {
-      Alert.alert('Error', 'Please enter a valid quantity');
+      alert('Error', 'Please enter a valid quantity');
       return;
     }
   
@@ -64,7 +65,7 @@ const PantryScreen = () => {
   
     if (error) {
       console.error('Error updating data:', error);
-      Alert.alert('Error', 'Failed to update item');
+      alert('Error', 'Failed to update item');
     } else {
       fetchPantryItems(); // Update list with modified item
       setName('');
@@ -85,8 +86,7 @@ const PantryScreen = () => {
   // Function to delete an item from database
   const handleDeletePress = (food_id) => {
     console.log("pressed delete")
-    Alert.alert(
-      console.log("In Alert"),
+    alert(
       'Confirm Deletion',
       'Are you sure you want to delete this item?',
       [
@@ -105,11 +105,11 @@ const PantryScreen = () => {
   
             if (error) {
               console.error('Error deleting item:', error);
-              Alert.alert('Error', 'Failed to delete item');
+              alert('Error', 'Failed to delete item');
             } else {
               // Remove the deleted item from local state
               fetchPantryItems();
-              Alert.alert('Success', 'Item deleted successfully');
+              alert('Success', 'Item deleted successfully');
             }
           },
         },
