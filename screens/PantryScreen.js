@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, Alert } from 'react-native';
-import supabase from '../src/supabase';
+import supabase from '../supabase';
 
-const PantryScreen = () => {
+const PantryScreen = ({ navigation }) => {
   const [items, setItems] = useState([]);
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState('');
@@ -121,6 +121,7 @@ const PantryScreen = () => {
 
   return (
     <View style={{ padding: 20 }}>
+      <Button title="Go to sign up" onPress={() => navigation.navigate('SignUp')} />
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Pantry Items:</Text>
       
       <FlatList
@@ -170,6 +171,7 @@ const PantryScreen = () => {
           <Button title="Delete" onPress={() => handleDeletePress(item.food_id)} />
         </View>
       ))}
+      
     </View>
   );
 };
