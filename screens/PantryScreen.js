@@ -176,6 +176,7 @@ const PantryScreen = ({ navigation }) => {
       <View style={{padding: 8}}>
         <Dropdown 
           style={styles.textInput}
+          placeholderStyle={styles.dropdownPlaceholder}
           data={ingredients}
           labelField="label"
           valueField="value"
@@ -224,7 +225,8 @@ const PantryScreen = ({ navigation }) => {
 
 const styles = {
   bigButton: {paddingBottom: 8},
-  textInput: { borderWidth: 1, padding: 8, marginVertical: 5 },
+  textInput: { borderWidth: 1, padding: 8, marginVertical: 5, fontSize: 15},
+  dropdownPlaceholder: { fontSize: 15}, //keep the fontsize for these the same
   delButton: { paddingLeft: 8 }
 };
 
