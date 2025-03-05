@@ -174,7 +174,9 @@ const PantryScreen = ({ navigation }) => {
       <Text style={{ marginTop: 20, fontSize: 18 }}>{editingItem ? 'Edit Item' : 'Add a New Item'}</Text>
       
       <View style={{padding: 8}}>
+
         <Dropdown 
+          value={ingredientName}
           style={styles.textInput}
           placeholderStyle={styles.dropdownPlaceholder}
           data={ingredients}
