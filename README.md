@@ -21,3 +21,23 @@ Still doing research on different languages, databases, and frameworks, but thes
 * **Backend**: Python
 * **Frontend**: ReactNative
 * **Database**: Supabase
+
+# Installation
+
+## Get started
+
+1. Clone the repo using git clone.
+
+2. Install dependencies
+
+   ```bash
+   npm install
+   ```
+
+3. Start the app
+
+   ```bash
+   npx expo start
+   OR   
+   npx expo start --tunnel (if using wsl for IOS testing)
+   ```
