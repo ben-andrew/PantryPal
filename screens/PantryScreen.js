@@ -141,7 +141,7 @@ const PantryScreen = ({ navigation }) => {
     <View style={{ padding: 20 }}>
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Pantry Items:</Text>
       
-      <FlatList
+      <FlatList style = {{ padding: 8 }}
         data={items}
         keyExtractor={(item) => item.food_id.toString()}
         renderItem={({ item }) => (
