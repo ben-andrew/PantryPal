@@ -147,7 +147,7 @@ const PantryScreen = ({ navigation }) => {
         renderItem={({ item }) => (
           <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text>{item.name} - {item.quantity} {item.unit}</Text>
-            <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 8}}>
               <Button title="Edit" onPress={() => handleEditPress(item)}/>
               <Button title="Delete" onPress={() => handleDeletePress(item.food_id)} />
             </View>
