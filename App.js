@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PantryScreen from './screens/PantryScreen';
 import LoginScreen from './screens/LoginScreen';
+import Signup from './screens/SignupScreen';
 import supabase from './src/supabase';
 
 const Stack = createStackNavigator();
@@ -34,7 +35,8 @@ w
         {session ? (
           <Stack.Screen name="Pantry" component={PantryScreen} />
             ) : (
-          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />,
+          <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
         )}
       </Stack.Navigator>
     </NavigationContainer>
