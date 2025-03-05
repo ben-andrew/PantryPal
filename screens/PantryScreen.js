@@ -145,9 +145,12 @@ const PantryScreen = ({ navigation }) => {
         data={items}
         keyExtractor={(item) => item.food_id.toString()}
         renderItem={({ item }) => (
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text>{item.name} - {item.quantity} {item.unit}</Text>
-            <Button title="Edit" onPress={() => handleEditPress(item)} />
+            <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+              <Button title="Edit" onPress={() => handleEditPress(item)}/>
+              <Button title="Delete" onPress={() => handleDeletePress(item.food_id)} />
+            </View>
           </View>
         )}
       />
@@ -158,7 +161,7 @@ const PantryScreen = ({ navigation }) => {
         placeholder="Item Name"
         value={name}
         onChangeText={setName}
-        style={{ borderWidth: 1, padding: 8, marginVertical: 5 }}
+        style={styles.textInput}
       />
 
       <TextInput
@@ -166,30 +169,41 @@ const PantryScreen = ({ navigation }) => {
         value={quantity || ''}  // Set to empty string if quantity is undefined
         onChangeText={setQuantity}
         keyboardType="numeric"
-        style={{ borderWidth: 1, padding: 8, marginVertical: 5 }}
+        style={styles.textInput}
       />
 
       <TextInput
         placeholder="Unit (e.g., pieces, lbs, cups)"
         value={unit}
         onChangeText={setUnit}
-        style={{ borderWidth: 1, padding: 8, marginVertical: 5 }}
+        style={styles.textInput}
       />
 
-      {editingItem ? (
-        <Button title="Save Changes" onPress={editPantryItem} />
-      ) : (
-        <Button title="Add Item" onPress={addPantryItem} />
-      )}
-
+      <View style={styles.bigButton}>
+        {editingItem ? (
+          <Button title="Save Changes" onPress={editPantryItem} style={styles.bigButton} />
+        ) : (
+          <Button title="Add Item" onPress={addPantryItem} style={styles.bigButton} />
+        )}
+      </View>
+      {/* Moved this up
       {items.map((item) => (
         <View key={item.food_id} style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text>{item.name} - {item.quantity} {item.unit}</Text>
-          <Button title="Delete" onPress={() => handleDeletePress(item.food_id)} />
+          <View style={styles.delButton}>
+            <Button title="Delete" onPress={() => handleDeletePress(item.food_id)} />
+          </View>
         </View>
-      ))}
+      ))} 
+    */}
     </View>
-  );
+  ); 
+}
+
+const styles = {
+  bigButton: {paddingBottom: 8},
+  textInput: { borderWidth: 1, padding: 8, marginVertical: 5 },
+  delButton: { paddingLeft: 8 }
 };
 
 export default PantryScreen;
