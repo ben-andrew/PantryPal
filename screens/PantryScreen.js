@@ -28,16 +28,13 @@ const PantryScreen = ({ navigation }) => {
 
   // Fetch pantry items from Supabase
   const fetchPantryItems = async () => {
-    const { data, error } = await supabase.from('food_inventory').select('*');
+    const { data, error } = await supabase.from('food_inventory_RLS').select('*');
     if (error) {
       console.error('Error fetching data:', error);
     } else {
       console.log('Fetched Items:', data);  // Log the data to inspect it
       setItems(data);
     }
-
-
-
   };
 
   useEffect(() => {
@@ -51,9 +48,11 @@ const PantryScreen = ({ navigation }) => {
       return;
     }
 
+    const { data : {user} } = await supabase.auth.getUser();
+    console.log(user);
     const { data, error } = await supabase
-      .from('food_inventory')
-      .insert([{ name, quantity: parseInt(quantity), unit }]);
+      .from('food_inventory_RLS')
+      .insert([{ name, quantity: parseInt(quantity), unit, user_id: user.id}]);
 
     if (error) {
       console.error('Error inserting data:', error);
@@ -78,7 +77,7 @@ const PantryScreen = ({ navigation }) => {
     }
   
     const { data, error } = await supabase
-      .from('food_inventory')
+      .from('food_inventory_RLS')
       .update([{ name, quantity: parsedQuantity, unit }])
       .eq('food_id', editingItem.food_id); // Update using the correct primary key
   
@@ -118,7 +117,7 @@ const PantryScreen = ({ navigation }) => {
           text: 'OK',
           onPress: async () => {
             const { data, error } = await supabase
-              .from('food_inventory')
+              .from('food_inventory_RLS')
               .delete()
               .eq('food_id', food_id);  // Delete item with matching food_id
   
