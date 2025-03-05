@@ -1,14 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList } from 'react-native';
 import alert from "../src/alert";
 import supabase from '../src/supabase';
 
-const PantryScreen = () => {
+const PantryScreen = ({ navigation }) => {
   const [items, setItems] = useState([]);
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [unit, setUnit] = useState('');
   const [editingItem, setEditingItem] = useState(null); // Track the item being edited
+
+  // Add logout button to header.
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    navigation.replace('Login');
+  }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{ padding: 20 }}>
+          <Button title="Logout" onPress={handleLogout} color="red"/>
+        </View>
+      )
+    })
+  });
 
   // Fetch pantry items from Supabase
   const fetchPantryItems = async () => {
@@ -19,6 +35,9 @@ const PantryScreen = () => {
       console.log('Fetched Items:', data);  // Log the data to inspect it
       setItems(data);
     }
+
+
+
   };
 
   useEffect(() => {
