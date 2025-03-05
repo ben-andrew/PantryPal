@@ -2,10 +2,13 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList } from 'react-native';
 import alert from "../src/alert";
 import supabase from '../src/supabase';
+//import FoodList from "./FoodList";
+import { Dropdown } from 'react-native-element-dropdown';
 
 const PantryScreen = ({ navigation }) => {
+  const [ingredients, setIngredients] = useState(["nothing"]);
   const [items, setItems] = useState([]);
-  const [name, setName] = useState('');
+  const [ingredientName, setIngredientName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [unit, setUnit] = useState('');
   const [editingItem, setEditingItem] = useState(null); // Track the item being edited
@@ -26,6 +29,20 @@ const PantryScreen = ({ navigation }) => {
     })
   });
 
+  const fetchDBIngredients = async () => {
+    let newIngr;
+    try {   
+        const res = await fetch("https://www.themealdb.com/api/json/v1/1/list.php?i=list");
+        const data = (await res.json()).meals;
+        newIngr = data.map((meal) => ({ label: meal.strIngredient, value: meal.strIngredient }));
+    }
+    catch (e) {
+        console.log("fetch caught error: ", e);
+        newIngr = [{ label: "nothing", value: "nothing" }];
+    }
+    setIngredients(newIngr);
+}
+
   // Fetch pantry items from Supabase
   const fetchPantryItems = async () => {
     const { data, error } = await supabase.from('food_inventory_RLS').select('*');
@@ -39,11 +56,12 @@ const PantryScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchPantryItems();
+    fetchDBIngredients();
   }, []);
 
   // Function to add a new pantry item
   const addPantryItem = async () => {
-    if (!name || !quantity || !unit) {
+    if (!ingredientName || !quantity || !unit) {
       alert('Error', 'Please fill in all fields');
       return;
     }
@@ -52,7 +70,7 @@ const PantryScreen = ({ navigation }) => {
     console.log(user);
     const { data, error } = await supabase
       .from('food_inventory_RLS')
-      .insert([{ name, quantity: parseInt(quantity), unit, user_id: user.id}]);
+      .insert([{ name: ingredientName, quantity: parseInt(quantity), unit, user_id: user.id}]);
 
     if (error) {
       console.error('Error inserting data:', error);
@@ -64,7 +82,7 @@ const PantryScreen = ({ navigation }) => {
 
   // Function to edit an existing pantry item
   const editPantryItem = async () => {
-    if (!name || !quantity || !unit) {
+    if (!ingredientName || !quantity || !unit) {
       alert('Error', 'Please fill in all fields');
       return;
     }
@@ -78,7 +96,7 @@ const PantryScreen = ({ navigation }) => {
   
     const { data, error } = await supabase
       .from('food_inventory_RLS')
-      .update([{ name, quantity: parsedQuantity, unit }])
+      .update([{ name: ingredientName, quantity: parsedQuantity, unit }])
       .eq('food_id', editingItem.food_id); // Update using the correct primary key
   
     if (error) {
@@ -86,7 +104,7 @@ const PantryScreen = ({ navigation }) => {
       alert('Error', 'Failed to update item');
     } else {
       fetchPantryItems(); // Update list with modified item
-      setName('');
+      setIngredientName('');
       setQuantity('');
       setUnit('');
       setEditingItem(null); // Reset editing mode
@@ -95,7 +113,7 @@ const PantryScreen = ({ navigation }) => {
 
   // Function to handle the item selection for editing
   const handleEditPress = (item) => {
-    setName(item.name);
+    setIngredientName(item.name);
     setQuantity(item.quantity !== undefined && item.quantity !== null ? item.quantity : '');
     setUnit(item.unit);
     setEditingItem(item); // Set the current item being edited
@@ -103,7 +121,6 @@ const PantryScreen = ({ navigation }) => {
 
   // Function to delete an item from database
   const handleDeletePress = (food_id) => {
-    console.log("pressed delete")
     alert(
       'Confirm Deletion',
       'Are you sure you want to delete this item?',
@@ -155,36 +172,42 @@ const PantryScreen = ({ navigation }) => {
       />
 
       <Text style={{ marginTop: 20, fontSize: 18 }}>{editingItem ? 'Edit Item' : 'Add a New Item'}</Text>
+      
+      <View style={{padding: 8}}>
+        <Dropdown 
+          style={styles.textInput}
+          data={ingredients}
+          labelField="label"
+          valueField="value"
+          search
+          placeholder="Select an Ingredient"
+          searchPlaceholder="search an ingredient"
+          onChange={item => setIngredientName(item.value)}
+        />
+        <TextInput
+          placeholder="Quantity"
+          value={quantity || ''}  // Set to empty string if quantity is undefined
+          onChangeText={setQuantity}
+          keyboardType="numeric"
+          style={styles.textInput}
+        />
+        <TextInput
+          placeholder="Unit (e.g., pieces, lbs, cups)"
+          value={unit}
+          onChangeText={setUnit}
+          style={styles.textInput}
+        />
 
-      <TextInput
-        placeholder="Item Name"
-        value={name}
-        onChangeText={setName}
-        style={styles.textInput}
-      />
+        <View style={styles.bigButton}>
+          {editingItem ? (
+            <Button title="Save Changes" onPress={editPantryItem} style={styles.bigButton} />
+          ) : (
+            <Button title="Add Item" onPress={addPantryItem} style={styles.bigButton} />
+          )}
+        </View>
 
-      <TextInput
-        placeholder="Quantity"
-        value={quantity || ''}  // Set to empty string if quantity is undefined
-        onChangeText={setQuantity}
-        keyboardType="numeric"
-        style={styles.textInput}
-      />
-
-      <TextInput
-        placeholder="Unit (e.g., pieces, lbs, cups)"
-        value={unit}
-        onChangeText={setUnit}
-        style={styles.textInput}
-      />
-
-      <View style={styles.bigButton}>
-        {editingItem ? (
-          <Button title="Save Changes" onPress={editPantryItem} style={styles.bigButton} />
-        ) : (
-          <Button title="Add Item" onPress={addPantryItem} style={styles.bigButton} />
-        )}
       </View>
+
       {/* Moved this up
       {items.map((item) => (
         <View key={item.food_id} style={{ flexDirection: 'row', alignItems: 'center' }}>
