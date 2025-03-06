@@ -10,7 +10,7 @@ export default function LoginScreen({ navigation }) {
     async function handleAuth(action) {
         setError(null);
         let result;
-        if (action === 'login') {
+        if (action === 'login') { 
             result = await supabase.auth.signInWithPassword({ email, password });
         }
         else {
@@ -27,11 +27,11 @@ export default function LoginScreen({ navigation }) {
             <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" />
 
             <Text>Password:</Text>
-            <TextInput value={password} onChangeText={setPassword} autoCapitalize="none" />
+            <TextInput value={password} onChangeText={setPassword} autoCapitalize="none" secureTextEntry />
 
             {error && <Text style = {{ color: 'red' }}>{error}</Text>}
 
-            <Button title="Sign Up" onPress={() => handleAuth('signup')} />
+            <Button title="Sign Up" onPress={() => navigation.navigate('Signup')} />
             <Button title="Log In" onPress={() => handleAuth('login')} />
         </View>
     );

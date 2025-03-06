@@ -13,31 +13,32 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    //Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session} }) => {
+    // Check if user is already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setLoading(false)
+      setLoading(false);
     });
 
-    // listen for auth state changes
+    // Listen for auth state changes
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
 
     return () => authListener.subscription.unsubscribe();
-w
-  }, []);
 
+  }, []);
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {session ? (
-          <Stack.Screen name="Pantry" component={PantryScreen} />
-            ) : (
-          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />,
+      {!session ? (
+        <>
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
-        )}
+        </>
+      ) : (
+        <Stack.Screen name="Pantry" component={PantryScreen} />
+      )}
       </Stack.Navigator>
     </NavigationContainer>
   );
