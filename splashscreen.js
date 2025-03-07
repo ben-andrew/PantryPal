@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet} from "react-native";
 
 const SplashScreen = ({ navigation }) => {
   console.log("SplashScreen component rendered!");
@@ -7,7 +7,7 @@ const SplashScreen = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
       console.log("navigating to Login Screen..");
-      navigation.replace("Login");
+      navigation.navigate("Login");
     }, 2000);
   }, []);
 

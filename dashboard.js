@@ -7,13 +7,21 @@ import { Dimensions } from 'react-native';
 
 const {width, height} = Dimensions.get("window");
 
-const Dashboard = () => {
+const Dashboard = ({ navigation}) => {
   useEffect(() => {
     console.log("Dashboard component loaded and rendered");
   }, []);
 
+  const recipes = [
+    { name: "Salmon", image: require('../assets/salmon.png') },
+    { name: "Chicken", image: require('../assets/chicken.png') },
+    { name: "Vegan", image: require('../assets/vegan.png') },
+    { name: "Pasta", image: require('../assets/pasta.png') },
+  ];
+
   return (
     <SafeAreaView style={styles.container}>
+    
       <LinearGradient colors = {["#FFA500", "#FFB733"]} style = {styles.header}>
         <TouchableOpacity style={styles.iconButton}>
           <Icon name="cart-outline" size={24} color="white" />
@@ -25,7 +33,7 @@ const Dashboard = () => {
 
         <Text style={styles.headerText}>Welcome, User!</Text>
 
-        <TouchableOpacity style={styles.settingsIconButton}>
+        <TouchableOpacity style={styles.settingsIconButton} onPress={() => navigation.navigate("Settings")}>
           <Icon name="settings-outline" size={24} color="white" />
         </TouchableOpacity>
 
@@ -37,7 +45,7 @@ const Dashboard = () => {
           <Icon name="search-outline" size={20} color="gray" style={styles.searchIcon} />
         </View>
       </LinearGradient>
-
+     
       <ScrollView contentContainerStyle = {{ flexGrow: 1, paddingBottom: 80}}>
         <ScrollView horizontal showsHorizontalScrollIndicator = {false} style = {styles.categoryContainer}>
           {["All", "Lunch", "Dinner", "Vegan", "..."].map((item, index) => (
@@ -47,15 +55,14 @@ const Dashboard = () => {
           ))}
         </ScrollView>
 
-        <View style={styles.recipeContainer}>
-          {["Recipe 1", "Recipe 2", "Recipe 3", "Recipe 4"].map((recipe, index) => (
-            <View key={index} style={styles.recipeCard}>
-              <Image source = {require('../assets/foodplaceholder.png')} style = {styles.recipeImage} />
-              <Text style={styles.recipeText}>{recipe}</Text>
-              <TouchableOpacity style={styles.addButton}>
-                <Icon name="add-circle-outline" size={24} color="#FFA500" />
-              </TouchableOpacity>
-            </View>
+        <View style={styles.recipeContainer}>{recipes.map((recipe, index) => (
+          <View key={index} style={styles.recipeCard}>
+            <Image source={recipe.image} style={styles.recipeImage} />
+              <Text style={styles.recipeText}>{recipe.name}</Text>
+            <TouchableOpacity style={styles.addButton}>
+              <Icon name="add-circle-outline" size={24} color="#FFA500" />
+            </TouchableOpacity>
+          </View>
           ))}
         </View>
       </ScrollView>
@@ -83,6 +90,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomLeftRadius: 35,
     borderBottomRightRadius: 35,
+   
   },
 
   logo: {
@@ -197,15 +205,16 @@ const styles = StyleSheet.create({
   },
 
   recipeImage: {
-    width: "40%",
-    height: "30%",
+    width: 120,
+    height: 120,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     marginBottom: 20,
-    top: -40,
+    top: -30,
   },
 
   recipeText: {
+    top: -20,
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: -45,
