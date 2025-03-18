@@ -4,7 +4,7 @@ import alert from "../src/alert";
 import supabase from '../src/supabase';
 import { Dropdown } from 'react-native-element-dropdown';
 
-const PantryScreen = ({ navigation }) => {
+const PantryScreen = ( {navigation} ) => {
   const [ingredients, setIngredients] = useState(["nothing"]);
   const [items, setItems] = useState([]);
   const [ingredientName, setIngredientName] = useState('');
@@ -12,17 +12,22 @@ const PantryScreen = ({ navigation }) => {
   const [unit, setUnit] = useState('');
   const [editingItem, setEditingItem] = useState(null); // Track the item being edited
 
-  // Add logout button to header.
+  // Add buttons to header.
   async function handleLogout() {
     await supabase.auth.signOut();
     navigation.replace('Login');
   }
 
+  async function toShoppingList() {
+    navigation.navigate('Cart');
+  }
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <View style={{ padding: 20 }}>
+        <View style={{ padding: 20, flex: 1, flexDirection: "row", justifyContent: 'flex-end' }}>
           <Button title="Logout" onPress={handleLogout} color="red"/>
+          <Button title="Cart" onPress={toShoppingList} color="yellow"/>
         </View>
       )
     })

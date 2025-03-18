@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Text } from 'react-native';
 import supabase from '../src/supabase'
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation} ) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
@@ -22,7 +22,7 @@ export default function LoginScreen({ navigation }) {
     }
 
     return (
-        <View style = {{ padding: 20 }}>
+        <View style = {{ padding: 50 }}>
             <Text>Email:</Text>
             <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" />
 

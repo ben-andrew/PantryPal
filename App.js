@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import supabase from './src/supabase';
 import PantryScreen from './screens/PantryScreen';
 import LoginScreen from './screens/LoginScreen';
 import Signup from './screens/SignupScreen';
-import supabase from './src/supabase';
+import CartScreen from './screens/CartScreen';
 
 const Stack = createStackNavigator();
 
@@ -36,8 +37,11 @@ export default function App() {
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
         </>
-      ) : (
-        <Stack.Screen name="Pantry" component={PantryScreen} />
+      ) : ( 
+        <>
+          <Stack.Screen name="Pantry" component={PantryScreen} />
+          <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
+        </>
       )}
       </Stack.Navigator>
     </NavigationContainer>
