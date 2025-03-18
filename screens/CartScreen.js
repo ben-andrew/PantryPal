@@ -5,11 +5,12 @@ import {
   TextInput,
   Button,
   FlatList,
-  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  StatusBar,
 } from "react-native";
+import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Dropdown } from "react-native-element-dropdown";
@@ -269,7 +270,7 @@ const CartScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{flex: 1}} contentContainerStyle={{height: height}}>
       <LinearGradient colors={["#FFA500", "#FFB733"]} style={styles.header}>
         <Text style={styles.headerText}>Shopping List</Text>
         <TouchableOpacity
@@ -279,7 +280,7 @@ const CartScreen = ({ navigation }) => {
           <Icon name="arrow-back-outline" size={30} color="white" />
         </TouchableOpacity>
       </LinearGradient>
-      <ScrollView style={styles.container}>
+      <ScrollView>
         <View style={{ alignItems: "center" }}>
           {isAddingOrEditing ? (
             <>
@@ -446,9 +447,11 @@ const styles = StyleSheet.create({
   dropdownPlaceholder: { fontSize: smallFontSize }, //keep the fontsize for these the same
   delButton: { paddingLeft: 8, borderWidth: 1 },
   container: {
-		height: height,
-    flex: 1,
-    backgroundColor: "#f1f1f1",
+		flex: 1,
+    paddingTop: StatusBar.currentHeight,
+  },
+  scrollView: {
+    backgroundColor: "pink",
   },
   header: {
     height: 90,

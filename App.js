@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import supabase from './src/supabase';
 import PantryScreen from './screens/PantryScreen';
 import LoginScreen from './screens/LoginScreen';
 import Signup from './screens/SignupScreen';
 import CartScreen from './screens/CartScreen';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -28,6 +28,8 @@ export default function App() {
     return () => authListener.subscription.unsubscribe();
 
   }, []);
+
+  //return <CartScreen/>
 
   return (
     <NavigationContainer>
