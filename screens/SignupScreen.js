@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, Alert } from 'react-native';
 import supabase from '../src/supabase';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const SignupScreen = ({ navigation }) => {
+const SignupScreen = ( {navigation} ) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
