@@ -22,10 +22,13 @@ const { height } = Dimensions.get("window").height;
 
 const CartScreen = ({ navigation }) => {
   // State
-  const [mealDBIngredients, setIngredients] = useState([]);
-  const [meals, setMeals] = useState([{ name: "nothing", ingredients: [] }]);
-  const [items, setItems] = useState([]);
-  const [ingredientName, setIngredientName] = useState("");
+  // This is a mess and I need to clean it up...
+  const [ingredientsFromMealDB, setingredientsFromMealDB] = useState([]);
+  const [mealsFromMealDB, setMealsFromMealDB] = useState([
+    { name: "nothing", ingredients: [] },
+  ]);
+  const [cartItems, setCartItems] = useState([]);
+  const [nameEntered, setNameEntered] = useState("");
   const [quantityEntered, setQuantityEntered] = useState("");
   const [unitEntered, setUnitEntered] = useState("");
   const [editItemEntered, setEditItemEntered] = useState(null);
@@ -35,16 +38,16 @@ const CartScreen = ({ navigation }) => {
 
   // React Functions
   useEffect(() => {
-    fetchCartItems();
-    fetchDBIngredients();
-    fetchDBMeals();
+    cartFetchItems();
+    mealDBFetchIngredients();
+    mealDBFetchRandomMeal();
   }, []);
 
   useEffect(() => {
     setRecommendedIngredients(getRecommendedIngredients());
     console.log(recommendedIngredients);
     setLoading(false);
-  }, [meals, items]);
+  }, [mealsFromMealDB]);
 
   // Navigation Functions
   async function navigateFromIcon(icon) {
@@ -54,17 +57,17 @@ const CartScreen = ({ navigation }) => {
   // Database Functions
 
   // Fetch data
-  async function fetchCartItems() {
+  async function cartFetchItems() {
     const { data, error } = await supabase.from("cart_RLS").select("*");
     if (error) {
       console.error("Error fetching data:", error);
     } else {
       console.log("Fetched Items:", data); // Log the data to inspect it
-      setItems(data);
+      setCartItems(data);
     }
   }
 
-  const fetchDBIngredients = async () => {
+  const mealDBFetchIngredients = async () => {
     let newIngr;
     try {
       const res = await fetch(
@@ -79,23 +82,20 @@ const CartScreen = ({ navigation }) => {
       console.log("fetch caught error: ", e);
       newIngr = [{ label: "nothing", value: "nothing" }];
     }
-    setIngredients(newIngr);
+    setingredientsFromMealDB(newIngr);
   };
 
   const getRecommendedIngredients = () => {
-    const list = [];
-    const labels = items.map((item) => item.name);
-    console.log("meals:", meals);
-    for (let meal of meals) {
-      console.log("thisMeal", meal);
+    const ingredientList = new Set();
+    const ingredientLabels = new Set(cartItems.map((item) => item.name));
+    for (let meal of mealsFromMealDB) {
       for (let ingr of meal.ingredients) {
-        if (!labels.includes(ingr)) {
-          list.push(ingr);
+        if (!ingredientLabels.has(ingr)) {
+          ingredientList.add(ingr);
         }
       }
     }
-    console.log("list", list);
-    return list;
+    return Array.from(ingredientList);
   };
 
   const extractIngredients = (meal) => {
@@ -110,7 +110,7 @@ const CartScreen = ({ navigation }) => {
   };
 
   // Only fetches one meal right now, for testing!
-  const fetchDBMeals = async () => {
+  const mealDBFetchRandomMeal = async () => {
     try {
       const res = await fetch(
         "https://www.themealdb.com/api/json/v1/1/random.php"
@@ -121,15 +121,21 @@ const CartScreen = ({ navigation }) => {
         ingredients: extractIngredients(data),
       };
       console.log("meal:", meal);
-      setMeals([meal]);
+      setMealsFromMealDB([meal]);
     } catch (e) {
       console.log("fetch caught error: ", e);
     }
   };
 
   // Add/Edit/Delete
+  const removeIngredientFromRecommendedIngredients = (ingr) => {
+    console.log(ingr);
+    const newList = recommendedIngredients.filter((item) => item != ingr)
+    setRecommendedIngredients(newList);
+  }
+
   const addCartItemCustom = async () => {
-    if (!ingredientName || !quantityEntered || !unitEntered) {
+    if (!nameEntered || !quantityEntered || !unitEntered) {
       alert("Error", "Please fill in all fields");
       return;
     }
@@ -140,7 +146,7 @@ const CartScreen = ({ navigation }) => {
     console.log(user);
     const { data, error } = await supabase.from("cart_RLS").insert([
       {
-        name: ingredientName,
+        name: nameEntered,
         quantity: parseInt(quantityEntered),
         unit: unitEntered,
         user_id: user.id,
@@ -151,16 +157,15 @@ const CartScreen = ({ navigation }) => {
       console.error("Error inserting data:", error);
       alert("Error", "Failed to add item");
     } else {
-      fetchCartItems();
+      cartFetchItems();
     }
   };
 
-  const addCartItemRecommended = async (ingr, quant) => {
+  const addCartItemFromRecommended = async (ingr, quant) => {
     setLoading(true);
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    console.log(user);
     const { data, error } = await supabase.from("cart_RLS").insert([
       {
         name: ingr,
@@ -174,13 +179,14 @@ const CartScreen = ({ navigation }) => {
       console.error("Error inserting data:", error);
       alert("Error", "Failed to add item");
     } else {
-      fetchCartItems();
+      cartFetchItems();
+      removeIngredientFromRecommendedIngredients(ingr);
     }
     setLoading(false);
   };
 
   const editCartItem = async () => {
-    if (!ingredientName || !quantityEntered || !unitEntered) {
+    if (!nameEntered || !quantityEntered || !unitEntered) {
       alert("Error", "Please fill in all fields");
       return;
     }
@@ -195,7 +201,7 @@ const CartScreen = ({ navigation }) => {
     const { data, error } = await supabase
       .from("cart_RLS")
       .update([
-        { name: ingredientName, quantity: parsedQuantity, unit: unitEntered },
+        { name: nameEntered, quantity: parsedQuantity, unit: unitEntered },
       ])
       .eq("food_id", editItemEntered.food_id); // Update using the correct primary key
 
@@ -203,8 +209,8 @@ const CartScreen = ({ navigation }) => {
       console.error("Error updating data:", error);
       alert("Error", "Failed to update item");
     } else {
-      fetchCartItems(); // Update list with modified item
-      setIngredientName("");
+      cartFetchItems(); // Update list with modified item
+      setNameEntered("");
       setQuantityEntered("");
       setUnitEntered("");
       setEditItemEntered(null); // Reset editing mode
@@ -212,42 +218,25 @@ const CartScreen = ({ navigation }) => {
   };
 
   // Function to delete an item from database
-  const handleDeletePress = (food_id) => {
-    alert(
-      "Confirm Deletion",
-      "Are you sure you want to delete this item?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Delete cancelled"),
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: async () => {
-            const { data, error } = await supabase
-              .from("cart_RLS")
-              .delete()
-              .eq("food_id", food_id); // Delete item with matching food_id
+  const handleDeletePress = async (food_id) => {
+    const { data, error } = await supabase
+      .from("cart_RLS")
+      .delete()
+      .eq("food_id", food_id); // Delete item with matching food_id
 
-            if (error) {
-              console.error("Error deleting item:", error);
-              alert("Error", "Failed to delete item");
-            } else {
-              // Remove the deleted item from local state
-              fetchCartItems();
-              //alert("Success", "Item deleted successfully");
-            }
-          },
-        },
-      ],
-      { cancelable: true }
-    );
+    if (error) {
+      console.error("Error deleting item:", error);
+      alert("Error", "Failed to delete item");
+    } else {
+      // Remove the deleted item from local state
+      cartFetchItems();
+      //alert("Success", "Item deleted successfully");
+    }
   };
 
   // Function to handle the item selection for editing
   const handleEditPress = (item) => {
-    setIngredientName(item.name);
+    setNameEntered(item.name);
     setQuantityEntered(
       item.quantity !== undefined && item.quantity !== null ? item.quantity : ""
     );
@@ -270,7 +259,10 @@ const CartScreen = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={{flex: 1}} contentContainerStyle={{height: height}}>
+    <SafeAreaView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ height: height }}
+    >
       <LinearGradient colors={["#FFA500", "#FFB733"]} style={styles.header}>
         <Text style={styles.headerText}>Shopping List</Text>
         <TouchableOpacity
@@ -286,16 +278,16 @@ const CartScreen = ({ navigation }) => {
             <>
               <View style={{ padding: 8 }}>
                 <Dropdown
-                  value={ingredientName}
+                  value={nameEntered}
                   style={styles.textInput}
                   placeholderStyle={styles.dropdownPlaceholder}
-                  data={mealDBIngredients}
+                  data={ingredientsFromMealDB}
                   labelField="label"
                   valueField="value"
                   search
                   placeholder="Select an Ingredient"
                   searchPlaceholder="search an ingredient"
-                  onChange={(item) => setIngredientName(item.value)}
+                  onChange={(item) => setNameEntered(item.value)}
                 />
                 <TextInput
                   placeholder="Quantity"
@@ -334,16 +326,18 @@ const CartScreen = ({ navigation }) => {
             </>
           ) : (
             <TouchableOpacity onPress={() => setIsAddingOrEditing(true)}>
-              <Text style={[styles.yellowButton, {marginTop: 16}]}>Add New Item</Text>
+              <Text style={[styles.yellowButton, { marginTop: 16 }]}>
+                Add New Item
+              </Text>
             </TouchableOpacity>
           )}
         </View>
 
         <Text style={styles.midSectionHeaderText}>Cart Items:</Text>
         <FlatList
-					scrollEnabled={false}
+          scrollEnabled={false}
           contentContainerStyle={styles.itemListContainer}
-          data={items}
+          data={cartItems}
           keyExtractor={(item) => item.food_id.toString()}
           renderItem={({ item }) => (
             <View
@@ -360,12 +354,12 @@ const CartScreen = ({ navigation }) => {
                 }}
               >
                 <TouchableOpacity onPress={() => handleEditPress(item)}>
-                  <Text style={styles.yellowButton}>Edit</Text>
+                <Icon style={styles.yellowButton} name="hammer-outline" size ={24}/>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => handleDeletePress(item.food_id)}
                 >
-                  <Text style={styles.redButton}>Delete</Text>
+                  <Icon style={styles.redButton} name="remove-circle-outline" size ={24}/>
                 </TouchableOpacity>
               </View>
             </View>
@@ -373,11 +367,14 @@ const CartScreen = ({ navigation }) => {
         />
 
         <Text style={styles.midSectionHeaderText}>
-          Recommended Items: {meals[0].name}
+          Recommended Items: {mealsFromMealDB[0].name}
         </Text>
         <FlatList
-					scrollEnabled={false}
-          contentContainerStyle={[styles.itemListContainer, { paddingBottom: 75 }]}
+          scrollEnabled={false}
+          contentContainerStyle={[
+            styles.itemListContainer,
+            { paddingBottom: 75 },
+          ]}
           data={recommendedIngredients}
           keyExtractor={(item) => item}
           renderItem={({ item }) => (
@@ -392,21 +389,23 @@ const CartScreen = ({ navigation }) => {
                   gap: 16,
                 }}
               >
-                {!loading ? (
+                 {!loading ? (
                   <TouchableOpacity
-                    onPress={() => addCartItemRecommended(item, 1)}
+                    onPress={() => addCartItemFromRecommended(item, 1)}
                   >
-                    <Text style={styles.yellowButton}>Add</Text>
+                    <Icon style={styles.yellowButton} name="add-circle-outline" size ={24}/>
                   </TouchableOpacity>
                 ) : (
-                  <></>
+                  <TouchableOpacity onPress={() => {return}/** Handle loading */}>
+                    <Icon style={styles.yellowButton} name="add-circle-outline" size ={24}/>
+                  </TouchableOpacity>
                 )}
               </View>
             </View>
           )}
         />
       </ScrollView>
-			
+
       <View style={styles.navBar}>
         {[
           "home-outline",
@@ -447,7 +446,7 @@ const styles = StyleSheet.create({
   dropdownPlaceholder: { fontSize: smallFontSize }, //keep the fontsize for these the same
   delButton: { paddingLeft: 8, borderWidth: 1 },
   container: {
-		flex: 1,
+    flex: 1,
     paddingTop: StatusBar.currentHeight,
   },
   scrollView: {
@@ -553,7 +552,7 @@ const styles = StyleSheet.create({
   },
 
   navBar: {
-		flex: 1,
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-around",
     paddingVertical: 15,
@@ -571,7 +570,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     borderRadius: 30,
   },
-	navBarAbs: {
+  navBarAbs: {
     flexDirection: "row",
     justifyContent: "space-around",
     paddingVertical: 15,
@@ -612,15 +611,15 @@ const styles = StyleSheet.create({
   redButton: {
     color: "red",
     padding: 8,
-		marginVertical: 3,
-		borderWidth: 1,
+    marginVertical: 3,
+    borderWidth: 1,
     fontSize: smallFontSize,
   },
   yellowButton: {
     color: "#FFA500",
     padding: 8,
-		marginVertical: 3,
-		borderWidth: 1,
+    marginVertical: 3,
+    borderWidth: 1,
     fontSize: smallFontSize,
   },
 });
