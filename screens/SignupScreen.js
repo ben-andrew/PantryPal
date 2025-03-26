@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { KeyboardAvoidingView, Image, TouchableOpacity, View, Text, TextInput, Button, Alert, StyleSheet, ScrollView } from "react-native";
 import supabase from "../src/supabase";
 import { SafeAreaView } from "react-native-safe-area-context";
+import alert from "../src/alert"
 
 const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+
+
 
   // Function to handle sign-up
   const handleSignup = async () => {
@@ -19,11 +22,14 @@ const SignupScreen = ({ navigation }) => {
 
     if (error) {
       setError(error.message);
+      alert(
+        error.message
+      );
       return;
     }
 
     if (data.user) {
-      Alert.alert(
+      alert(
         "Success",
         "Account created! Please check your email for verification."
       );
@@ -57,7 +63,7 @@ const SignupScreen = ({ navigation }) => {
 
           <TouchableOpacity
             style={styles.createButton}
-            onPress={() => handleSignup()}
+            onPress={handleSignup}
           >
             <Text style={styles.createButtonText}>Create</Text>
           </TouchableOpacity>
