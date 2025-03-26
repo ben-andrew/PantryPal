@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Image, TouchableOpacity, View, Text, TextInput, Button, Alert, StyleSheet, ScrollView } from "react-native";
+import { KeyboardAvoidingView, Image, TouchableOpacity, View, Text, TextInput, Button, Alert, StyleSheet, ScrollView } from "react-native";
 import supabase from "../src/supabase";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -40,12 +40,15 @@ const SignupScreen = ({ navigation }) => {
 
         <View style={styles.inputContainer}>
           <TextInput
+            keyboardType="email-address"
             style={styles.input}
             placeholder="Email"
             onChangeText={setEmail}
+            value={email}
           />
 
           <TextInput
+            value={password}
             style={styles.input}
             placeholder="Password"
             secureTextEntry={true}
@@ -78,7 +81,7 @@ const SignupScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
     flexDirection: "column",
@@ -98,7 +101,7 @@ const styles = StyleSheet.create({
 
   createAccountBox: {
     justifyContent: "space-between",
-    width: "40%",
+    width: "90%",
     backgroundColor: "#F1F1F1",
     borderRadius: 35,
     alignItems: "center",
@@ -119,8 +122,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 25,
-    marginBottom: 20,
-    marginTop: 30,
+    marginBottom: 10,
+    marginTop: 20,
   },
 
   createButtonText: {
@@ -137,16 +140,15 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    flex: 1,
-    height: "50%",
-    width: "100%",
-    padding: 22,
-    borderWidth: 1,
+    width: "100%", // This is kept
+    paddingHorizontal: 20,
     paddingVertical: 15,
-    fontSize: 20,
+    borderWidth: 1,
+    fontSize: 18,
     marginVertical: 10,
     borderRadius: 35,
     backgroundColor: "#fff",
+    color: "black",
   },
 
   loginButton: {
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 23,
     borderRadius: 25,
-    marginTop: 40,
+    marginTop: 20,
   },
 
   loginButtonText: {
@@ -165,17 +167,15 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    flex: 1,
-    resizeMode: "contain",
-    width: null,
-    height: null,
+    resizeMode: "cover",
+    aspectRatio: "1",
+    width: 80,
+    height: 80,
   },
 
   logoView: {
     marginTop: 20,
     alignItems: "center",
-    width: "10%",
-    height: "10%",
   },
 });
 
