@@ -15,7 +15,6 @@ const PantryScreen = ( {navigation} ) => {
   // Add buttons to header.
   async function handleLogout() {
     await supabase.auth.signOut();
-    navigation.replace('Login');
   }
 
   async function toShoppingList() {
