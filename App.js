@@ -36,8 +36,8 @@ export default function App() {
       <Stack.Navigator>
       {!session ? (
         <>
-          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         </>
       ) : ( 
         <>
