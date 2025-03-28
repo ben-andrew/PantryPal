@@ -273,6 +273,7 @@ const CartScreen = ({ navigation }) => {
             <>
               <View style={{ padding: 8 }}>
                 <Dropdown
+                  mode="auto"
                   value={nameEntered}
                   style={styles.textInput}
                   placeholderStyle={styles.dropdownPlaceholder}
