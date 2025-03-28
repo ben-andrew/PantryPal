@@ -3,20 +3,20 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   FlatList,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
   StatusBar,
 } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Dropdown } from "react-native-element-dropdown";
-import alert from "../src/alert";
-import supabase from "../src/supabase";
+import alert from "../src/scripts/alert";
+import supabase from "../src/scripts/supabase";
 import { Dimensions } from "react-native";
+import Navbar from "../src/components/Navbar"
 
 const { height } = Dimensions.get("window").height;
 
@@ -48,11 +48,6 @@ const CartScreen = ({ navigation }) => {
     console.log(recommendedIngredients);
     setLoading(false);
   }, [mealsFromMealDB]);
-
-  // Navigation Functions
-  async function navigateFromIcon(icon) {
-    if (icon === "home-outline") navigation.navigate("Pantry");
-  }
 
   // Database Functions
 
@@ -406,23 +401,7 @@ const CartScreen = ({ navigation }) => {
         />
       </ScrollView>
 
-      <View style={styles.navBar}>
-        {[
-          "home-outline",
-          "list-outline",
-          "scan-outline",
-          "search-outline",
-          "add-outline",
-        ].map((icon, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.navButton}
-            onPress={() => navigateFromIcon(icon)}
-          >
-            <Icon name={icon} size={24} color="#FFA500" />
-          </TouchableOpacity>
-        ))}
-      </View>
+      <Navbar/>
     </SafeAreaView>
   );
 };
@@ -549,47 +528,6 @@ const styles = StyleSheet.create({
     height: 40,
     marginRight: 15,
     borderRadius: 20,
-  },
-
-  navBar: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 15,
-    backgroundColor: "white",
-    borderTopWidth: 1,
-    borderTopColor: "#ffffff",
-    position: "absolute",
-    bottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 5,
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    width: "80%",
-    alignSelf: "center",
-    borderRadius: 30,
-  },
-  navBarAbs: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 15,
-    backgroundColor: "white",
-    borderTopWidth: 1,
-    borderTopColor: "#ffffff",
-    position: "absolute",
-    bottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 5,
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    width: "80%",
-    alignSelf: "center",
-    borderRadius: 30,
-  },
-  navButton: {
-    padding: 10,
   },
   itemListContainer: {
     padding: 16,

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList } from 'react-native';
-import alert from "../src/alert";
-import supabase from '../src/supabase';
+import alert from "../src/scripts/alert";
+import supabase from '../src/scripts/supabase';
 import { Dropdown } from 'react-native-element-dropdown';
+import Navbar from '../src/components/Navbar';
 
 const PantryScreen = ( {navigation} ) => {
   const [ingredients, setIngredients] = useState(["nothing"]);
@@ -214,16 +215,7 @@ const PantryScreen = ( {navigation} ) => {
 
       </View>
 
-      {/* Moved this up
-      {items.map((item) => (
-        <View key={item.food_id} style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text>{item.name} - {item.quantity} {item.unit}</Text>
-          <View style={styles.delButton}>
-            <Button title="Delete" onPress={() => handleDeletePress(item.food_id)} />
-          </View>
-        </View>
-      ))} 
-    */}
+      <Navbar/>
     </View>
   ); 
 }
