@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import supabase from './src/supabase';
+import supabase from './src/scripts/supabase';
 import PantryScreen from './screens/PantryScreen';
 import LoginScreen from './screens/LoginScreen';
 import Signup from './screens/SignupScreen';
@@ -41,7 +41,7 @@ export default function App() {
         </>
       ) : ( 
         <>
-          <Stack.Screen name="Pantry" component={PantryScreen} />
+          <Stack.Screen name="Pantry" component={PantryScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
         </>
       )}

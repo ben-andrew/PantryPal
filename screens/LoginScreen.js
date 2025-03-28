@@ -10,7 +10,7 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import supabase from "../src/supabase";
+import supabase from "../src/scripts/supabase";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
