@@ -41,7 +41,7 @@ export default function App() {
         </>
       ) : ( 
         <>
-          <Stack.Screen name="Pantry" component={PantryScreen} />
+          <Stack.Screen name="Pantry" component={PantryScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
         </>
       )}
