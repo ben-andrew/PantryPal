@@ -185,6 +185,7 @@ const PantryScreen = ({ navigation }) => {
         ) : (
           <Button title="Add Item" onPress={addPantryItem} style={styles.bigButton} />
         )}
+        <Button title="Sign Up" onPress={() => navigation.replace('Settings')} />
       </View>
       {/* Moved this up
       {items.map((item) => (
