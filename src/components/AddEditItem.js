@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import supabase from "../scripts/supabase";
+import alert from "../scripts/alert";
 
 /**
  * Add or edit an item in the pantry.
@@ -40,6 +41,7 @@ export default function AddEditItem({
   useEffect(() => {
     mealDBFetchIngredients();
     if (editingItem) {
+      console.log(editingItem);
       setNameEntered(editingItem.name);
       setQuantityEntered(editingItem.quantity);
       setUnitEntered(editingItem.unit);
@@ -53,6 +55,11 @@ export default function AddEditItem({
       setUnitEntered("");
       setEditingItem(null);
     };
+  }
+
+  function handleCancle() {
+    setEditingItem(null);
+    cancelFunction();
   }
 
   const mealDBFetchIngredients = async () => {
@@ -104,35 +111,40 @@ export default function AddEditItem({
   };
 
   const editItem = async () => {
+    try { console.log("editing " + editingItem);
     if (!nameEntered || !quantityEntered || !unitEntered) {
       alert("Error", "Please fill in all fields");
       return;
     }
 
-    const parsedQuantity = parseInt(quantityEntered);
+    const parsedQuantity = quantityEntered;
 
     if (isNaN(parsedQuantity)) {
       alert("Error", "Please enter a valid quantity");
       return;
     }
-
+    
     const { data, error } = await supabase
       .from("cart_RLS")
       .update([
         { name: nameEntered, quantity: parsedQuantity, unit: unitEntered },
       ])
-      .eq("food_id", itemToEdit.food_id); // Update using the correct primary key
+      .eq("food_id", editingItem.food_id); // Update using the correct primary key
 
     if (error) {
       console.error("Error updating data:", error);
       alert("Error", "Failed to update item");
     } else {
+      alert("success!");
       setNameEntered("");
       setQuantityEntered("");
       setUnitEntered("");
       setEditingItem(null);
       onComplete();
     }
+  } catch (e) {
+    console.log(e);
+  }
   };
 
   return (
@@ -153,13 +165,14 @@ export default function AddEditItem({
       <TextInput
         placeholder="Quantity"
         placeholderStyle={styles.textInput}
-        value={quantityEntered || ""} // Set to empty string if quantity is undefined
+        value={quantityEntered.toString()} 
         onChangeText={setQuantityEntered}
         keyboardType="numeric"
         style={styles.textInput}
       />
       <TextInput
         placeholder="Unit (e.g., pieces, lbs, cups)"
+        placeholderStyle={styles.textInput}
         value={unitEntered}
         onChangeText={setUnitEntered}
         style={styles.textInput}
@@ -178,7 +191,7 @@ export default function AddEditItem({
         <TouchableOpacity
           style={{ paddingTop: 0, alignItems: "center" }}
           text="Cancel"
-          onPress={cancelFunction}
+          onPress={handleCancle}
         >
           <Text style={styles.redButton}>Cancel</Text>
         </TouchableOpacity>
