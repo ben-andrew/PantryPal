@@ -1,96 +1,10 @@
-import React, { useState } from "react";
-import { Image, TouchableOpacity, View, Text, TextInput, Button, Alert, StyleSheet, ScrollView } from "react-native";
-import supabase from "../src/scripts/supabase";
-import alert from "../src/scripts/alert"
-
-const SignupScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-
-
-
-  // Function to handle sign-up
-  const handleSignup = async () => {
-    setError(null);
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message);
-      alert(
-        error.message
-      );
-      return;
-    }
-
-    if (data.user) {
-      alert(
-        "Success",
-        "Account created! Please check your email for verification."
-      );
-      navigation.navigate("Login");
-    }
-  };
-
-  return (
-    <ScrollView contentContainerStyle={styles.signupPageContainer}>
-      <Text style={styles.signupLetsStartText}>Let’s Start!</Text>
-
-      <View style={styles.createAccountBox}>
-        <Text style={styles.createAccountHeaderText}>Create an Account:</Text>
-
-        <View style={styles.signupInputContainer}>
-          <TextInput
-            keyboardType="email-address"
-            style={styles.signupInput}
-            placeholder="Email"
-            onChangeText={setEmail}
-            value={email}
-          />
-
-          <TextInput
-            value={password}
-            style={styles.signupInput}
-            placeholder="Password"
-            secureTextEntry={true}
-            onChangeText={setPassword}
-          />
-
-          <TouchableOpacity
-            style={styles.createAccountButton}
-            onPress={handleSignup}
-          >
-            <Text style={styles.createAccountButtonText}>Create</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <TouchableOpacity
-        style={styles.loginButton}
-        onPress={() => navigation.navigate("Login")}
-      >
-        <Text style={styles.loginButtonText}>or Login</Text>
-      </TouchableOpacity>
-
-      <View style={styles.signupLogoContainer}>
-        <Image
-          source={require("../assets/pantrypallogo.png")}
-          style={styles.signupLogo}
-        />
-      </View>
-    </ScrollView>
-  );
-};
+import { StyleSheet } from "react-native";
 
 const smallFontSize = 16;
 const mediumFontSize = 23;
 const LargeFontSize = 30;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   signupPageContainer: {
     flex: 1,
     flexDirection: "column",
@@ -279,6 +193,10 @@ export const styles = StyleSheet.create({
   },
   dropdownPlaceholder: { fontSize: smallFontSize }, //keep the fontsize for these the same
   delButton: { paddingLeft: 8, borderWidth: 1 },
+  container: {
+    flex: 1,
+    paddingTop: StatusBar.currentHeight,
+  },
   scrollView: {
     backgroundColor: "pink",
   },
@@ -391,5 +309,4 @@ export const styles = StyleSheet.create({
     fontSize: smallFontSize,
   },
 });
-
-export default SignupScreen;
+export default styles;

@@ -19,15 +19,14 @@ import supabase from "../src/scripts/supabase";
 import { Dropdown } from "react-native-element-dropdown";
 import Navbar from "../src/components/Navbar";
 import Icon from "react-native-vector-icons/Ionicons";
+import PageHeader from "../src/components/PageHeader";
+import AddEditItem from "../src/components/AddEditItem";
 
 const { height } = Dimensions.get("window").height;
 
 const PantryScreen = ({ navigation }) => {
   const [ingredients, setIngredients] = useState(["nothing"]);
   const [items, setItems] = useState([]);
-  const [ingredientName, setIngredientName] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [unit, setUnit] = useState("");
   const [editingItem, setEditingItem] = useState(null); // Track the item being edited
 
   // Add buttons to header.
@@ -38,24 +37,6 @@ const PantryScreen = ({ navigation }) => {
   async function toShoppingList() {
     navigation.navigate("Cart");
   }
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <View
-          style={{
-            padding: 20,
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "flex-end",
-          }}
-        >
-          <Button title="Logout" onPress={handleLogout} color="red" />
-          <Button title="Cart" onPress={toShoppingList} color="yellow" />
-        </View>
-      ),
-    });
-  });
 
   const fetchDBIngredients = async () => {
     let newIngr;
@@ -83,7 +64,6 @@ const PantryScreen = ({ navigation }) => {
     if (error) {
       console.error("Error fetching data:", error);
     } else {
-      console.log("Fetched Items:", data); // Log the data to inspect it
       setItems(data);
     }
   };
@@ -93,72 +73,8 @@ const PantryScreen = ({ navigation }) => {
     fetchDBIngredients();
   }, []);
 
-  // Function to add a new pantry item
-  const addPantryItem = async () => {
-    if (!ingredientName || !quantity || !unit) {
-      alert("Error", "Please fill in all fields");
-      return;
-    }
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    console.log(user);
-    const { data, error } = await supabase.from("food_inventory_RLS").insert([
-      {
-        name: ingredientName,
-        quantity: parseInt(quantity),
-        unit,
-        user_id: user.id,
-      },
-    ]);
-
-    if (error) {
-      console.error("Error inserting data:", error);
-      alert("Error", "Failed to add item");
-    } else {
-      fetchPantryItems();
-    }
-  };
-
-  // Function to edit an existing pantry item
-  const editPantryItem = async () => {
-    if (!ingredientName || !quantity || !unit) {
-      alert("Error", "Please fill in all fields");
-      return;
-    }
-
-    const parsedQuantity = parseInt(quantity);
-
-    if (isNaN(parsedQuantity)) {
-      alert("Error", "Please enter a valid quantity");
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from("food_inventory_RLS")
-      .update([{ name: ingredientName, quantity: parsedQuantity, unit }])
-      .eq("food_id", editingItem.food_id); // Update using the correct primary key
-
-    if (error) {
-      console.error("Error updating data:", error);
-      alert("Error", "Failed to update item");
-    } else {
-      fetchPantryItems(); // Update list with modified item
-      setIngredientName("");
-      setQuantity("");
-      setUnit("");
-      setEditingItem(null); // Reset editing mode
-    }
-  };
-
   // Function to handle the item selection for editing
   const handleEditPress = (item) => {
-    setIngredientName(item.name);
-    setQuantity(
-      item.quantity !== undefined && item.quantity !== null ? item.quantity : ""
-    );
-    setUnit(item.unit);
     setEditingItem(item); // Set the current item being edited
   };
 
@@ -197,44 +113,17 @@ const PantryScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}
-    contentContainerStyle={{ height: height }}>
-      <LinearGradient colors={["#FFA500", "#FFB733"]} style={styles.header}>
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={() => navigation.navigate("Cart")}
-        >
-          <Icon name="cart-outline" size={24} color="white" />
-        </TouchableOpacity>
-
-        <View style={styles.logoView}>
-          <Image
-            source={require("../assets/pantrypallogo.png")}
-            style={styles.logo}
-          />
-        </View>
-
-        <Text style={styles.headerText}>Welcome, User!</Text>
-
-        <TouchableOpacity
-          style={styles.settingsIconButton}
-          onPress={() => navigation.navigate("Settings")}
-        >
-          <Icon name="settings-outline" size={24} color="white" />
-        </TouchableOpacity>
-
-        <Text style={styles.subText}>What will it be today?</Text>
-
-        <View style={styles.searchBar}>
-          <TextInput placeholder="Search.." style={styles.searchInput} />
-          <Icon
-            name="search-outline"
-            size={20}
-            color="gray"
-            style={styles.searchIcon}
-          />
-        </View>
-      </LinearGradient>
+    <SafeAreaView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ height: height }}
+    >
+      <PageHeader
+        hasSearch={false}
+        hasIcons={false}
+        largetext="Pantry"
+        subtext="What you currently have"
+        hasBackButton={true}
+      />
       <ScrollView>
         <View style={{ flex: 1 }} contentContainerStyle={{ height: height }}>
           <View style={{ padding: 20 }}>
@@ -279,51 +168,7 @@ const PantryScreen = ({ navigation }) => {
             <Text style={{ marginTop: 20, fontSize: 18 }}>
               {editingItem ? "Edit Item" : "Add a New Item"}
             </Text>
-
-            <View style={{ padding: 8 }}>
-              <Dropdown
-                mode="auto"
-                value={ingredientName}
-                style={styles.textInput}
-                placeholderStyle={styles.dropdownPlaceholder}
-                data={ingredients}
-                labelField="label"
-                valueField="value"
-                search
-                placeholder="Select an Ingredient"
-                searchPlaceholder="search an ingredient"
-                onChange={(item) => setIngredientName(item.value)}
-              />
-              <TextInput
-                placeholder="Quantity"
-                value={quantity || ""} // Set to empty string if quantity is undefined
-                onChangeText={setQuantity}
-                keyboardType="numeric"
-                style={styles.textInput}
-              />
-              <TextInput
-                placeholder="Unit (e.g., pieces, lbs, cups)"
-                value={unit}
-                onChangeText={setUnit}
-                style={styles.textInput}
-              />
-
-              <View style={styles.bigButton}>
-                {editingItem ? (
-                  <Button
-                    title="Save Changes"
-                    onPress={editPantryItem}
-                    style={styles.bigButton}
-                  />
-                ) : (
-                  <Button
-                    title="Add Item"
-                    onPress={addPantryItem}
-                    style={styles.bigButton}
-                  />
-                )}
-              </View>
-            </View>
+            <AddEditItem dbName="food_inventory_RLS" onComplete={fetchPantryItems} editItem={editingItem} editItemSetter={setEditingItem}/> 
           </View>
         </View>
       </ScrollView>
@@ -346,20 +191,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 70,
     marginLeft: 20,
-  },  
+  },
   settingsIconButton: {
     position: "absolute",
     top: 70,
     right: 20,
     marginLeft: -20,
-  },
-
-  subText: {
-    fontSize: 20,
-    color: "white",
-    alignSelf: "left",
-    marginTop: -1,
-    marginBottom: 10,
   },
 
   searchBar: {
@@ -435,83 +272,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     backgroundColor: "pink",
-  },
-  settingsContainer: {
-    padding: 20,
-  },
-  settingsCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 15,
-    height: 80,
-    width: "90%",
-    left: 20,
-    marginBottom: 10,
-  },
-
-  userSettingsCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 15,
-    height: 80,
-    width: "90%",
-    left: 20,
-    marginBottom: 40,
-  },
-  settingSubText: {
-    fontSize: smallFontSize,
-    top: 14,
-    left: -130,
-  },
-
-  setting2SubText: {
-    fontSize: smallFontSize,
-    top: 14,
-    left: -185,
-  },
-
-  setting3SubText: {
-    fontSize: smallFontSize,
-    top: 14,
-    left: -153,
-  },
-
-  setting4SubText: {
-    fontSize: smallFontSize,
-    top: 14,
-    left: -86,
-  },
-
-  settingsImage: {
-    width: 35,
-    height: 35,
-    marginRight: 15,
-    borderRadius: 20,
-  },
-
-  usersettingsImage: {
-    width: 40,
-    height: 40,
-    marginRight: 15,
-    borderRadius: 20,
-  },
-
-  ingredientsettingsImage: {
-    width: 35,
-    height: 35,
-    marginRight: 15,
-    borderRadius: 20,
-  },
-
-  recipesettingsImage: {
-    width: 40,
-    height: 40,
-    marginRight: 15,
-    borderRadius: 20,
   },
   itemListContainer: {
     padding: 16,
