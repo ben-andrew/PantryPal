@@ -37,8 +37,8 @@ const SignupScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.pageContainer}>
-      <Text style={styles.letsStart}>Let’s Start!</Text>
+    <ScrollView contentContainerStyle={styles.signupPageContainer}>
+      <Text style={styles.signupLetsStartText}>Let’s Start!</Text>
 
       <View style={styles.createAccountBox}>
         <Text style={styles.createAccountHeaderText}>Create an Account:</Text>
