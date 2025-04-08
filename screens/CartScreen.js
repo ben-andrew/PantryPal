@@ -40,7 +40,6 @@ const CartScreen = ({ navigation }) => {
 
   useEffect(() => {
     setRecommendedIngredients(getRecommendedIngredients());
-    console.log(recommendedIngredients);
     setLoading(false);
   }, [mealsFromMealDB]);
 
@@ -52,7 +51,6 @@ const CartScreen = ({ navigation }) => {
     if (error) {
       console.error("Error fetching data:", error);
     } else {
-      console.log("Fetched Items:", data); // Log the data to inspect it
       setCartItems(data);
     }
   }
@@ -176,7 +174,9 @@ const CartScreen = ({ navigation }) => {
         <View style={{ alignItems: "center" }}>
           {isAddingOrEditing ? (
             <>
-              <AddEditItem onComplete={cartFetchItems} dbName={"cart_RLS"} style={{ padding: 20 }} editItem={itemToEdit} editItemSetter={setItemToEdit} cancelFunction={() => setIsAddingOrEditing(false)}/>
+              <AddEditItem onComplete={cartFetchItems} dbName={"cart_RLS"} style={{ padding: 20 }} editItem={itemToEdit} editItemSetter={setItemToEdit} cancelFunction={() => { setIsAddingOrEditing(false)
+                setItemToEdit(null);
+              }}/>
             </>
           ) : (
             <TouchableOpacity onPress={() => setIsAddingOrEditing(true)}>

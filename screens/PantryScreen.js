@@ -64,7 +64,6 @@ const PantryScreen = ({ navigation }) => {
     if (error) {
       console.error("Error fetching data:", error);
     } else {
-      console.log("Fetched Items:", data); // Log the data to inspect it
       setItems(data);
     }
   };
