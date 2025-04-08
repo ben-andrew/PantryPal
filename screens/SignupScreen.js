@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { KeyboardAvoidingView, Image, TouchableOpacity, View, Text, TextInput, Button, Alert, StyleSheet, ScrollView } from "react-native";
+import { Image, TouchableOpacity, View, Text, TextInput, Button, Alert, StyleSheet, ScrollView } from "react-native";
 import supabase from "../src/scripts/supabase";
-import { SafeAreaView } from "react-native-safe-area-context";
 import alert from "../src/scripts/alert"
 
 const SignupScreen = ({ navigation }) => {
