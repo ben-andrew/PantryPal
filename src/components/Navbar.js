@@ -19,7 +19,8 @@ export default function Navbar() {
 
 	// Navigation Functions
   async function navigateFromIcon(icon) {
-    if (icon === "home-outline") navigation.navigate("Pantry");
+    if (icon === "home-outline") navigation.navigate("Dashboard");
+    if (icon === "list-outline") navigation.navigate("Pantry");
   }
 	
   return (
