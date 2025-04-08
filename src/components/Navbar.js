@@ -6,6 +6,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useNavigation } from '@react-navigation/native';
+import supabase from "../scripts/supabase";
 
 /**
  * Navbar - The navigation bar at the bottom of the screen
@@ -21,6 +22,7 @@ export default function Navbar() {
   async function navigateFromIcon(icon) {
     if (icon === "home-outline") navigation.navigate("Dashboard");
     if (icon === "list-outline") navigation.navigate("Pantry");
+    if (icon === "scan-outline") supabase.auth.signOut();
   }
 	
   return (
