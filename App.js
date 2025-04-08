@@ -6,6 +6,9 @@ import PantryScreen from './screens/PantryScreen';
 import LoginScreen from './screens/LoginScreen';
 import Signup from './screens/SignupScreen';
 import CartScreen from './screens/CartScreen';
+import SettingScreen from './screens/SettingsScreen'
+import UserSettings from './screens/UserSettings';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +46,8 @@ export default function App() {
         <>
           <Stack.Screen name="Pantry" component={PantryScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Settings" component={SettingScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="User" component={UserSettings} options={{ headerShown: false }} />
         </>
       )}
       </Stack.Navigator>
