@@ -275,18 +275,6 @@ const mediumFontSize = 23;
 const LargeFontSize = 30;
 
 const styles = StyleSheet.create({
-  saveOrAddButton: {
-    padding: 8,
-    fontSize: smallFontSize,
-    alignItems: "center",
-  },
-  Input: {
-    borderWidcartTextth: 1,
-    padding: 8,
-    marginVertical: 5,
-    fontSize: smallFontSize,
-  },
-  dropdownPlaceholder: { fontSize: smallFontSize }, //keep the fontsize for these the same
   cartDeleteButton: { paddingLeft: 8, borderWidth: 1 },
   container: {
     flex: 1,
@@ -294,27 +282,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     backgroundColor: "pink",
-  },
-  cartHeader: {
-    height: 90,
-    paddingTop: 10,
-    paddingHorizontal: 20,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    justifyContent: "center",
-  },
-
-  backButton: {
-    position: "absolute",
-    top: 35,
-    left: 35,
-  },
-
-  headerText: {
-    fontSize: LargeFontSize,
-    fontWeight: "bold",
-    color: "white",
-    textAlign: "center",
   },
   itemListContainer: {
     padding: 16,
