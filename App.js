@@ -6,6 +6,7 @@ import PantryScreen from './screens/PantryScreen';
 import LoginScreen from './screens/LoginScreen';
 import Signup from './screens/SignupScreen';
 import CartScreen from './screens/CartScreen';
+import Dashboard from './screens/Dashboard';
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +42,7 @@ export default function App() {
         </>
       ) : ( 
         <>
+          <Stack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }}/>
           <Stack.Screen name="Pantry" component={PantryScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
         </>
