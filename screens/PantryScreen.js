@@ -20,15 +20,13 @@ import { Dropdown } from "react-native-element-dropdown";
 import Navbar from "../src/components/Navbar";
 import Icon from "react-native-vector-icons/Ionicons";
 import PageHeader from "../src/components/PageHeader";
+import AddEditItem from "../src/components/AddEditItem";
 
 const { height } = Dimensions.get("window").height;
 
 const PantryScreen = ({ navigation }) => {
   const [ingredients, setIngredients] = useState(["nothing"]);
   const [items, setItems] = useState([]);
-  const [ingredientName, setIngredientName] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [unit, setUnit] = useState("");
   const [editingItem, setEditingItem] = useState(null); // Track the item being edited
 
   // Add buttons to header.
@@ -76,72 +74,8 @@ const PantryScreen = ({ navigation }) => {
     fetchDBIngredients();
   }, []);
 
-  // Function to add a new pantry item
-  const addPantryItem = async () => {
-    if (!ingredientName || !quantity || !unit) {
-      alert("Error", "Please fill in all fields");
-      return;
-    }
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    console.log(user);
-    const { data, error } = await supabase.from("food_inventory_RLS").insert([
-      {
-        name: ingredientName,
-        quantity: parseInt(quantity),
-        unit,
-        user_id: user.id,
-      },
-    ]);
-
-    if (error) {
-      console.error("Error inserting data:", error);
-      alert("Error", "Failed to add item");
-    } else {
-      fetchPantryItems();
-    }
-  };
-
-  // Function to edit an existing pantry item
-  const editPantryItem = async () => {
-    if (!ingredientName || !quantity || !unit) {
-      alert("Error", "Please fill in all fields");
-      return;
-    }
-
-    const parsedQuantity = parseInt(quantity);
-
-    if (isNaN(parsedQuantity)) {
-      alert("Error", "Please enter a valid quantity");
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from("food_inventory_RLS")
-      .update([{ name: ingredientName, quantity: parsedQuantity, unit }])
-      .eq("food_id", editingItem.food_id); // Update using the correct primary key
-
-    if (error) {
-      console.error("Error updating data:", error);
-      alert("Error", "Failed to update item");
-    } else {
-      fetchPantryItems(); // Update list with modified item
-      setIngredientName("");
-      setQuantity("");
-      setUnit("");
-      setEditingItem(null); // Reset editing mode
-    }
-  };
-
   // Function to handle the item selection for editing
   const handleEditPress = (item) => {
-    setIngredientName(item.name);
-    setQuantity(
-      item.quantity !== undefined && item.quantity !== null ? item.quantity : ""
-    );
-    setUnit(item.unit);
     setEditingItem(item); // Set the current item being edited
   };
 
@@ -235,50 +169,7 @@ const PantryScreen = ({ navigation }) => {
             <Text style={{ marginTop: 20, fontSize: 18 }}>
               {editingItem ? "Edit Item" : "Add a New Item"}
             </Text>
-
-            <View style={{ padding: 8 }}>
-              <Dropdown
-                mode="auto"
-                value={ingredientName}
-                style={styles.textInput}
-                placeholderStyle={styles.dropdownPlaceholder}
-                data={ingredients}
-                labelField="label"
-                valueField="value"
-                placeholder="Select an Ingredient"
-                searchPlaceholder="search an ingredient"
-                onChange={(item) => setIngredientName(item.value)}
-              />
-              <TextInput
-                placeholder="Quantity"
-                value={quantity || ""} // Set to empty string if quantity is undefined
-                onChangeText={setQuantity}
-                keyboardType="numeric"
-                style={styles.textInput}
-              />
-              <TextInput
-                placeholder="Unit (e.g., pieces, lbs, cups)"
-                value={unit}
-                onChangeText={setUnit}
-                style={styles.textInput}
-              />
-
-              <View style={styles.bigButton}>
-                {editingItem ? (
-                  <Button
-                    title="Save Changes"
-                    onPress={editPantryItem}
-                    style={styles.bigButton}
-                  />
-                ) : (
-                  <Button
-                    title="Add Item"
-                    onPress={addPantryItem}
-                    style={styles.bigButton}
-                  />
-                )}
-              </View>
-            </View>
+            <AddEditItem dbName="food_inventory_RLS" onComplete={fetchPantryItems} editItem={editingItem} editItemSetter={setEditingItem}/> 
           </View>
         </View>
       </ScrollView>

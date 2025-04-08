@@ -1,32 +1,59 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import supabase from "../scripts/supabase";
 
 /**
  * Add or edit an item in the pantry.
- * 
+ *
  * This component allows users to add a new item or edit an existing one. It includes fields for ingredient name, quantity, and unit, and provides a dropdown to select ingredients from an external API (MealDB). If `editItem` is provided, it switches to edit mode and updates an existing item.
- * 
+ *
  * @param {Object} props - The component props.
  * @param {string} props.dbName - The name of the database table to insert or update the item in.
  * @param {Object} [props.style] - The custom style for the component.
  * @param {Function} props.onComplete - Callback function that is called when an operation (add or edit) is completed.
- * @param {Function} props.cancelFunction - Callback function that is called when operation is canceled.
- * @param {Object} [props.editItem=null] - The item to be edited (if any). Defaults to `null` for adding a new item.
- * 
+ * @param {Function} [props.cancelFunction=null] - Callback function that is called when operation is canceled. if not set, canceling will just reset the form.
+ * @param {Object} [props.editItem=null] - The item to be edited (if any). Defaults to `null` for adding a new item. Must be state with a setter
+ * @param {Function} props.editItemSetter - Setter for editItem.
+ *
  * @returns {JSX.Element} The rendered component.
  */
-export default function AddEditItem({ dbName, style, onComplete, cancelFunction, editItem: itemToEdit=null }) {
+export default function AddEditItem({
+  dbName,
+  style,
+  onComplete,
+  cancelFunction = null,
+  editItem: editingItem = null,
+  editItemSetter: setEditingItem
+}) {
   const [ingredientsFromMealDB, setingredientsFromMealDB] = useState([]);
   const [nameEntered, setNameEntered] = useState("");
   const [quantityEntered, setQuantityEntered] = useState("");
   const [unitEntered, setUnitEntered] = useState("");
- 
 
   useEffect(() => {
     mealDBFetchIngredients();
-  }, [])
+    if (editingItem) {
+      setNameEntered(editingItem.name);
+      setQuantityEntered(editingItem.quantity);
+      setUnitEntered(editingItem.unit);
+    }
+  }, [editingItem]);
+
+  if (cancelFunction == null) {
+    cancelFunction = () => {
+      setNameEntered("");
+      setQuantityEntered("");
+      setUnitEntered("");
+      setEditingItem(null);
+    };
+  }
 
   const mealDBFetchIngredients = async () => {
     let newIngr;
@@ -103,6 +130,7 @@ export default function AddEditItem({ dbName, style, onComplete, cancelFunction,
       setNameEntered("");
       setQuantityEntered("");
       setUnitEntered("");
+      setEditingItem(null);
       onComplete();
     }
   };
@@ -138,7 +166,7 @@ export default function AddEditItem({ dbName, style, onComplete, cancelFunction,
       />
 
       <View style={styles.saveOrAddButton}>
-        {itemToEdit ? (
+        {editingItem ? (
           <TouchableOpacity onPress={editItem}>
             <Text style={styles.yellowButton}>Save Changes</Text>
           </TouchableOpacity>

@@ -149,11 +149,6 @@ const CartScreen = ({ navigation }) => {
 
   // Function to handle the item selection for editing
   const handleEditPress = (item) => {
-    setNameEntered(item.name);
-    setQuantityEntered(
-      item.quantity !== undefined && item.quantity !== null ? item.quantity : ""
-    );
-    setUnitEntered(item.unit);
     setItemToEdit(item); // Set the current item being edited
     setIsAddingOrEditing(true);
   };
@@ -181,7 +176,7 @@ const CartScreen = ({ navigation }) => {
         <View style={{ alignItems: "center" }}>
           {isAddingOrEditing ? (
             <>
-              <AddEditItem onComplete={cartFetchItems} dbName={"cart_RLS"} style={{ padding: 20 }} editItem={itemToEdit} cancelFunction={() => setIsAddingOrEditing(false)}/>
+              <AddEditItem onComplete={cartFetchItems} dbName={"cart_RLS"} style={{ padding: 20 }} editItem={itemToEdit} editItemSetter={setItemToEdit} cancelFunction={() => setIsAddingOrEditing(false)}/>
             </>
           ) : (
             <TouchableOpacity onPress={() => setIsAddingOrEditing(true)}>
