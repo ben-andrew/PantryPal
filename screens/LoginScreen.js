@@ -47,16 +47,16 @@ export default function LoginScreen({ navigation }) {
     */
 
   return (
-    <ScrollView contentContainerStyle={styles.pageContainer}>
-      <Text style={styles.letsStart}>Let’s Start!</Text>
+    <ScrollView contentContainerStyle={styles.signupPageContainer}>
+      <Text style={styles.signupLetsStartText}>Let’s Start!</Text>
 
       <View style={styles.createAccountBox}>
         <Text style={styles.createAccountHeaderText}>Log In:</Text>
 
-        <View style={styles.inputContainer}>
+        <View style={styles.signupInputContainer}>
           <TextInput
             keyboardType="email-address"
-            style={styles.input}
+            style={styles.signupInput}
             placeholder="Email"
             onChangeText={setEmail}
             value={email}
@@ -64,17 +64,17 @@ export default function LoginScreen({ navigation }) {
 
           <TextInput
             value={password}
-            style={styles.input}
+            style={styles.signupInput}
             placeholder="Password"
             secureTextEntry={true}
             onChangeText={setPassword}
           />
 
           <TouchableOpacity
-            style={styles.createButton}
+            style={styles.createAccountButton}
             onPress={() => handleAuth("login")}
           >
-            <Text style={styles.createButtonText}>Log In</Text>
+            <Text style={styles.createAccountButtonText}>Log In</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -86,10 +86,10 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.loginButtonText}>or Sign Up</Text>
       </TouchableOpacity>
 
-      <View style={styles.logoView}>
+      <View style={styles.signupLogoContainer}>
         <Image
           source={require("../assets/pantrypallogo.png")}
-          style={styles.logo}
+          style={styles.signupLogo}
         />
       </View>
     </ScrollView>

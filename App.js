@@ -9,6 +9,7 @@ import CartScreen from './screens/CartScreen';
 import SettingScreen from './screens/SettingsScreen'
 import UserSettings from './screens/UserSettings';
 
+import Dashboard from './screens/Dashboard';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,7 @@ export default function App() {
         </>
       ) : ( 
         <>
+          <Stack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }}/>
           <Stack.Screen name="Pantry" component={PantryScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Settings" component={SettingScreen} options={{ headerShown: false }} />
